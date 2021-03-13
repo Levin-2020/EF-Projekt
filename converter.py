@@ -1,6 +1,6 @@
 import time
 
-f = open("countries_copy.svg", "r")
+f = open("countries.svg", "r")
 data_raw = f.read()
 
 path_count = data_raw.count("<path")
@@ -16,7 +16,7 @@ for i in range(path_count):
     data_raw = data_raw[:s] + data_raw[e+8:]
     data.append(temp)
 
-f_write = open("test.svg", "w")
+f_write = open("output.svg", "w")
 f_string = ""
 
 for d in data:
