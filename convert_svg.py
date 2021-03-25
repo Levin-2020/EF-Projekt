@@ -7,6 +7,7 @@ path_count = data_raw.count("<path")
 
 data = []
 ids = {}
+data_dic = {}
 id_start = 1000
 
 for i in range(path_count):
@@ -18,6 +19,10 @@ for i in range(path_count):
 
 f_write = open("test.svg", "w")
 f_string = ""
+
+countries_csv = ""
+svg_csv = ""
+geo_csv = ""
 
 for d in data:
     c = d.find("class=")
@@ -39,8 +44,23 @@ for d in data:
     
     d = d[:-10] + f" onclick=\"click({d_id})\" " + d[-10:]
     f_string += d + "\n"
+    d = d.replace("\n","")
+    if name in data_dic:
+        data_dic[name] += d
+    else:
+        data_dic[name] = d
 
-f_write.write(f_string)
+
+for key in ids.keys():
+    svg_csv += str(ids[key]) + "," + data_dic[key] + "," + f"A country called {key}" + "," + "2" + "," + str((ids[key])) + "\n"
+    geo_csv += str(ids[key]) + "," + f"{key}" + "," + "country" + "\n"
 
 
-    
+ff = open("svg.csv", "w")
+ff.write(svg_csv)
+ff.close()
+
+ff = open("geo_elements.csv", "w")
+ff.write(geo_csv)
+ff.close()
+#f_write.write(f_string)
