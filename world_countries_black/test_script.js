@@ -1,3 +1,3 @@
-funcion click(a) {
+function click(a) {
 	alert (a);
 }
