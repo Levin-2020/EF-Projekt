@@ -1,76 +1,49 @@
 import time
-import os
-
-os.chdir(r'C:\Users\levin\Desktop\EF-Projekt\world_countries_black')
+from deep_translator import GoogleTranslator
 
 f = open("world.svg", "r")
 data_raw = f.read()
-print("done")
 path_count = data_raw.count("<path")
-print("done2")
+print(path_count)
 data = []
 ids = {}
 data_dic = {}
+names = []
 id_start = 2000
+
+test_output = ""
 
 for i in range(path_count):
     s = data_raw.find("<path")
-    e = data_raw.find("</path>")
-    temp = data_raw[s:e+7]
-    data_raw = data_raw[:s] + data_raw[e+8:]
+    e = data_raw.find("/>")
+    temp = data_raw[s:e+2]
+    data_raw = data_raw[:s] + data_raw[e+3:]
     data.append(temp)
 
+for i,d in enumerate(data):
+    title = d.find("title=")
+    if title != -1:
+        s_name = d.find("\"",title)
+        e_name = d.find("\"",s_name+1)
+        name = d[s_name+1:e_name]
+        name_de = GoogleTranslator('en', 'de').translate(text=name)
+        d = d.replace(name,name_de)
+       
+        end = d.find("/")
 
-print(data)
-"""
-
-f_string = ""
-
-countries_csv = ""
-svg_csv = ""
-geo_csv = ""
-
-for d in data:
-    c = d.find("class=")
-    if c == -1:
-        c1 = d.find("name=")
-    if c != -1:
-        temp = d[c+7:]
-        name = temp[:temp.find("\"")]
-    else:
-        temp = d[c1+6:]
-        name = temp[:temp.find("\"")]
-
-    if name in ids.keys():
-        d_id = ids[name]
-    else:
-        d_id = id_start
+        ids[name_de] = id_start
         id_start += 1
-        ids[name] = d_id
-    
-    d = d[:-10] + f" onclick=\"click({d_id})\" " + d[-10:]
-    f_string += d + "\n"
-    d = d.replace("\n","")
-    if name in data_dic:
-        data_dic[name] += d
-    else:
-        data_dic[name] = d
+
+        d = d[:end] + f"onclick=\"click({ids[name_de]})\" " + d[end:]
+
+        data_dic[name_de] = d
+        names.append(name_de)
+
+        test_output += d + "\n"
 
 
-for key in ids.keys():
-    svg_csv += str(ids[key]) + "," + data_dic[key] + "," + f"A country called {key}" + "," + "2" + "," + str((ids[key])) + "\n"
-    geo_csv += str(ids[key]) + "," + f"{key}" + "," + "country" + "\n"
+test_file = open("test_output.svg", "w")
+test_file.write(test_output)
+test_file.close()
 
 
-ff = open("svg.csv", "w")
-ff.write(svg_csv)
-ff.close()
-
-ff = open("geo_elements.csv", "w")
-ff.write(geo_csv)
-ff.close()
-
-#f_write = open("test.svg", "w")
-#f_write.write(f_string)
-
-"""
