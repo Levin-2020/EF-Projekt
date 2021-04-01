@@ -40,6 +40,23 @@ for i,d in enumerate(data):
         names.append(name_de)
 
         test_output += d + "\n"
+    else: 
+        id_str = d.find("id=")
+        s_name = d.find("\"",id_str)
+        e_name = d.find("\"",s_name+1)
+        name = d[s_name+1:e_name]
+       
+        end = d.find("/")
+
+        ids[name] = id_start
+        id_start += 1
+
+        d = d[:end] + f"onclick=\"click({ids[name]})\" " + d[end:]
+
+        data_dic[name] = d
+        names.append(name)
+
+        test_output += d + "\n"
 
 
 test_file = open("test_output.svg", "w")
