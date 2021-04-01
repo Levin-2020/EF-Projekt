@@ -11,6 +11,7 @@ print(path_count)
 data = []
 ids = {}
 data_dic = {}
+desc_dic = {}
 names = []
 id_start = 2000
 
@@ -21,6 +22,15 @@ cnt = 0
 header = data_raw[0:data_raw.find("<path")]
 bottom = "</svg>"
 test_output += header
+
+template_csv = ""
+template_csv += f"3;world_countries+;World map with every country;{header};{bottom}"
+template_csv = template_csv.replace("\n","")
+template_file = open("template.csv", "w")
+template_file.write(template_csv)
+template_file.close()
+
+
 
 for i in range(path_count):
     s = data_raw.find("<path")
@@ -40,8 +50,7 @@ for i,d in enumerate(data):
         s_name = d.find("\"",title)
         e_name = d.find("\"",s_name+1)
         name = d[s_name+1:e_name]
-        #name_de = GoogleTranslator('en', 'de').translate(text=name)
-        name_de = name
+        name_de = GoogleTranslator('en', 'de').translate(text=name)
         d = d.replace(name,name_de)
        
         end = d.find("/")
@@ -55,7 +64,7 @@ for i,d in enumerate(data):
         names.append(name_de)
 
         test_output += d + "\n"
-    
+        desc_dic[name_de] = "country"
     else:
         id_str = d.find("id=")
         s_name = d.find("\"",id_str)
@@ -74,6 +83,15 @@ for i,d in enumerate(data):
         names.append(name)
 
         test_output += d + "\n"
+
+        s_desc = d.find("<desc")
+        se_desc = d.find("\">",s_desc)
+        e_desc = d.find("</desc")
+
+        desc_dic[name] = d[se_desc+2:e_desc].replace("&amp;","und")
+        print(desc_dic[name])
+        
+
 test_output += bottom
 test_file = open("test_output1.svg", "w")
 test_file.write(test_output)
@@ -83,10 +101,14 @@ geo_csv = ""
 svg_csv = ""
 
 for key,item in ids.items():
-    geo_csv += f"{ids[key]};{key}\n"
+    geo_csv += f"{ids[key]};{key};{desc_dic[key]}\n"
+    d = data_dic[key].replace("\n","")
+    svg_csv += f"{ids[key]};{d};who knows, maybe {key};3;{ids[key]}\n"
 
 geo = open("geo_test.csv", "w")
 geo.write(geo_csv)
 geo.close()
 
-
+svg = open("svg_test.csv", "w")
+svg.write(svg_csv)
+svg.close()
