@@ -2,7 +2,7 @@ import time
 from deep_translator import GoogleTranslator
 
 import os
-os.chdir(r"C:\Users\levin\Desktop\EF-Projekt\world_countries_black")
+#os.chdir(r"C:\Users\levin\Desktop\EF-Projekt\world_countries_black")
 
 f = open("world_new.svg", "r")
 data_raw = f.read()
@@ -17,6 +17,10 @@ id_start = 2000
 test_output = ""
 
 cnt = 0
+
+header = data_raw[0:data_raw.find("<path")]
+bottom = "</svg>"
+test_output += header
 
 for i in range(path_count):
     s = data_raw.find("<path")
@@ -70,7 +74,7 @@ for i,d in enumerate(data):
         names.append(name)
 
         test_output += d + "\n"
-
+test_output += bottom
 test_file = open("test_output1.svg", "w")
 test_file.write(test_output)
 test_file.close()
