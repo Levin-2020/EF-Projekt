@@ -80,6 +80,9 @@ svg_csv = ""
 
 for key,item in ids.items():
     geo_csv += f"{ids[key]};{key}\n"
+    
+     
+
 
 geo = open("geo_test.csv", "w")
 geo.write(geo_csv)
