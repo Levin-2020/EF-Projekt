@@ -103,7 +103,7 @@ svg_csv = ""
 for key,item in ids.items():
     geo_csv += f"{ids[key]};{key};{desc_dic[key]}\n"
     d = data_dic[key].replace("\n","")
-    svg_csv += f"{ids[key]};{d};who knows, maybe {key};3;{ids[key]}\n"
+    svg_csv += f"{ids[key]}@{d}@who knows, maybe {key}@3@{ids[key]}\n"
 
 geo = open("geo_test.csv", "w")
 geo.write(geo_csv)
